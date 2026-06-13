@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aoki Collection — Live Sorter</title>
+<script src="https://js.pusher.com/8.4.0/pusher.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@700&display=swap');
+  :root {
+    --bg:#0a0a0a; --surface:#141414; --surface2:#1e1e1e; --border:#2a2a2a;
+    --green:#00e676; --green-dim:#00e67622; --yellow:#ffd600; --red:#ff1744;
+    --text:#f0f0f0; --muted:#666; --flash-bg:#00e67615;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column;}
+  header{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--border);background:var(--surface);}
+  .logo{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--green);letter-spacing:2px;text-transform:uppercase;}
+  .hright{display:flex;align-items:center;gap:20px;}
+  .sync-badge{font-size:11px;padding:3px 10px;border-radius:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;transition:all .3s;}
+  .sync-badge.on{background:var(--green-dim);color:var(--green);border:1px solid var(--green);}
+  .sync-badge.off{background:#ff174420;color:var(--red);border:1px solid var(--red);}
+  .header-stats{display:flex;gap:28px;}
+  .stat{text-align:center;}
+  .stat-val{font-size:22px;font-weight:900;color:var(--green);line-height:1;}
+  .stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+  .tabs{display:flex;border-bottom:1px solid var(--border);background:var(--surface);padding:0 24px;}
+  .tab{padding:10px 20px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;text-transform:uppercase;letter-spacing:1px;}
+  .tab.active{color:var(--green);border-bottom-color:var(--green);}
+  .tab:hover:not(.active){color:var(--text);}
+  .panel{display:none;flex:1;flex-direction:column;}
+  .panel.active{display:flex;}
+
+  #panel-input{padding:24px;gap:16px;}
+  .test-bar{background:#1a1200;border:1px solid #ffd60033;border-radius:8px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .test-bar-text{font-size:13px;color:var(--yellow);}
+  .btn-test{background:transparent;border:1px solid var(--yellow);color:var(--yellow);border-radius:5px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:1px;}
+  .btn-test:hover{background:#ffd60015;}
+  .input-main{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;}
+  .input-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;}
+  .input-row{display:flex;gap:10px;}
+  #username-input{flex:1;background:var(--bg);border:2px solid var(--border);border-radius:6px;padding:14px 18px;font-size:22px;font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--text);outline:none;transition:border-color .15s;text-transform:lowercase;}
+  #username-input:focus{border-color:var(--green);}
+  #username-input::placeholder{color:var(--muted);font-size:16px;}
+  .btn-submit{background:var(--green);color:#000;border:none;border-radius:6px;padding:14px 28px;font-size:16px;font-weight:900;cursor:pointer;text-transform:uppercase;letter-spacing:1px;}
+  .btn-submit:hover{opacity:.85;}
+  #flash-zone{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;min-height:110px;display:flex;align-items:center;justify-content:center;}
+  .flash-card{text-align:center;animation:flashIn .2s ease;}
+  @keyframes flashIn{from{transform:scale(.92);opacity:0;}to{transform:scale(1);opacity:1;}}
+  .flash-username{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:var(--text);}
+  .flash-bin{font-family:'JetBrains Mono',monospace;font-size:52px;font-weight:900;color:var(--green);line-height:1;}
+  .flash-bin-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-top:4px;}
+  .flash-new-badge{display:inline-block;background:var(--yellow);color:#000;font-size:10px;font-weight:900;padding:2px 8px;border-radius:3px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+  .flash-repeat-badge{display:inline-block;background:var(--green-dim);color:var(--green);border:1px solid var(--green);font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+  .flash-count{font-size:12px;color:var(--muted);margin-top:4px;}
+  .flash-empty{color:var(--muted);font-size:14px;}
+  .section-title{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;}
+  #recent-feed{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+  .feed-item{display:flex;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border);gap:12px;animation:slideIn .2s ease;}
+  .feed-item:last-child{border-bottom:none;}
+  .feed-item.nf{background:var(--flash-bg);}
+  @keyframes slideIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+  .feed-bin{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:900;color:var(--green);min-width:60px;text-align:center;background:var(--green-dim);border:1px solid #00e67633;border-radius:4px;padding:4px 8px;}
+  .feed-username{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;flex:1;}
+  .feed-count-badge{font-size:11px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:2px 8px;color:var(--muted);}
+  .feed-time{font-size:11px;color:var(--muted);min-width:45px;text-align:right;}
+
+  #panel-sorter{background:var(--bg);}
+  .sorter-split{display:grid;grid-template-columns:1fr 1fr;flex:1;min-height:0;}
+  .sorter-pane{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;position:relative;}
+  .sorter-pane.prev{opacity:.5;border-right:2px solid var(--border);}
+  .sorter-pane.curr{border-left:2px solid var(--border);}
+  .pane-label{position:absolute;top:14px;left:0;right:0;text-align:center;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:3px;color:var(--muted);}
+  .sorter-pane.curr .pane-label{color:var(--green);}
+  .sorter-card{text-align:center;animation:flashIn .15s ease;width:100%;}
+  .s-badge-row{margin-bottom:12px;min-height:28px;}
+  .s-new{display:inline-block;background:var(--yellow);color:#000;font-size:13px;font-weight:900;padding:4px 16px;border-radius:4px;text-transform:uppercase;letter-spacing:2px;}
+  .s-repeat{display:inline-block;background:var(--green-dim);color:var(--green);border:1px solid var(--green);font-size:13px;font-weight:700;padding:4px 16px;border-radius:4px;text-transform:uppercase;letter-spacing:2px;}
+  .s-username{font-family:'JetBrains Mono',monospace;font-size:36px;font-weight:700;color:var(--text);margin-bottom:8px;word-break:break-all;}
+  .sorter-pane.prev .s-username{font-size:26px;}
+  .s-bin-label{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:4px;margin-bottom:4px;}
+  .s-bin{font-family:'JetBrains Mono',monospace;font-size:130px;font-weight:900;color:var(--green);line-height:1;}
+  .sorter-pane.prev .s-bin{font-size:90px;color:var(--muted);}
+  .s-count{font-size:16px;color:var(--muted);margin-top:8px;}
+  .s-count span{color:var(--text);font-weight:700;}
+  .s-waiting{text-align:center;color:var(--muted);}
+  .s-waiting .big{font-size:22px;font-weight:700;margin-bottom:8px;color:var(--text);}
+  #sorter-recent{background:var(--surface);border-top:1px solid var(--border);padding:10px 20px;display:flex;gap:10px;overflow-x:auto;flex-shrink:0;}
+  .mini-chip{background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:5px 12px;white-space:nowrap;font-size:13px;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+  .mini-bin{font-family:'JetBrains Mono',monospace;font-weight:900;color:var(--green);font-size:15px;}
+  .mini-user{font-family:'JetBrains Mono',monospace;color:var(--text);}
+
+  #panel-bins{padding:24px;gap:16px;}
+  .bins-toolbar{display:flex;align-items:center;justify-content:space-between;}
+  .btn-reset{background:transparent;border:1px solid var(--red);color:var(--red);border-radius:5px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:1px;}
+  .btn-reset:hover{background:#ff174415;}
+  .btn-print{background:transparent;border:1px solid var(--green);color:var(--green);border-radius:5px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:1px;margin-right:8px;}
+  .btn-print:hover{background:var(--green-dim);}
+  #bin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px;overflow-y:auto;}
+  .bin-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:14px 16px;}
+  .bin-card-num{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:900;color:var(--green);line-height:1;}
+  .bin-card-user{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--text);margin-top:6px;word-break:break-all;}
+  .bin-card-count{font-size:11px;color:var(--muted);margin-top:4px;}
+  .bins-empty{color:var(--muted);font-size:14px;padding:40px;text-align:center;}
+
+  @media print{
+    body{background:white;color:black;}
+    header,.tabs,.test-bar,.bins-toolbar{display:none!important;}
+    #panel-input,#panel-sorter{display:none!important;}
+    #panel-bins{display:flex!important;}
+    .bin-card{border:1px solid #ccc;break-inside:avoid;}
+    .bin-card-num,.bin-card-user{color:black;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Aoki Collection // Live Sorter</div>
+  <div class="hright">
+    <span class="sync-badge off" id="sync-badge">⚡ Connecting...</span>
+    <div class="header-stats">
+      <div class="stat"><div class="stat-val" id="stat-sales">0</div><div class="stat-label">Sales</div></div>
+      <div class="stat"><div class="stat-val" id="stat-buyers">0</div><div class="stat-label">Buyers</div></div>
+      <div class="stat"><div class="stat-val" id="stat-bins">0</div><div class="stat-label">Bins</div></div>
+    </div>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('input')">Input</div>
+  <div class="tab" onclick="switchTab('sorter')">Sorter Display</div>
+  <div class="tab" onclick="switchTab('bins')">Bin Map</div>
+</div>
+
+<div class="panel active" id="panel-input">
+  <div style="display:flex;flex-direction:column;gap:16px;padding:24px;">
+    <div class="test-bar">
+      <div class="test-bar-text"><strong>TEST MODE:</strong> Fire fake sales to try it out before going live.</div>
+      <button class="btn-test" onclick="fireTestSale()">⚡ Fire Test Sale</button>
+    </div>
+    <div class="input-main">
+      <div class="input-label">Paste buyer username → press Enter</div>
+      <div class="input-row">
+        <input id="username-input" type="text" placeholder="paste username here..."
+          autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus/>
+        <button class="btn-submit" onclick="submitUsername()">Enter</button>
+      </div>
+    </div>
+    <div id="flash-zone"><div class="flash-empty">Waiting for first sale...</div></div>
+    <div>
+      <div class="section-title">Recent Sales</div>
+      <div id="recent-feed"><div style="padding:20px;text-align:center;color:var(--muted);font-size:13px;">No sales yet</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="panel-sorter">
+  <div class="sorter-split">
+    <div class="sorter-pane prev" id="pane-prev">
+      <div class="pane-label">Previous</div>
+      <div class="s-waiting"><div style="font-size:16px;color:var(--muted);">—</div></div>
+    </div>
+    <div class="sorter-pane curr" id="pane-curr">
+      <div class="pane-label">Current</div>
+      <div class="s-waiting"><div class="big">Waiting for sales...</div><div>Keep this tab open on sorter screen</div></div>
+    </div>
+  </div>
+  <div id="sorter-recent"></div>
+</div>
+
+<div class="panel" id="panel-bins">
+  <div class="bins-toolbar">
+    <div class="section-title" style="margin:0">All Bin Assignments</div>
+    <div>
+      <button class="btn-print" onclick="window.print()">🖨 Print</button>
+      <button class="btn-reset" onclick="resetShow()">Reset Show</button>
+    </div>
+  </div>
+  <div id="bin-grid"><div class="bins-empty">No buyers yet.</div></div>
+</div>
+
+<script>
+  var SERVER = 'https://aoki-sorter-server.onrender.com';
+  var PUSHER_KEY = 'a4764a812a3a7413bc8e';
+  var PUSHER_CLUSTER = 'us2';
+  var STORAGE_KEY = 'aoki-sorter-state-v3';
+
+  var buyers = {}, nextBin = 1, salesLog = [];
+
+  function saveState() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify({buyers:buyers,nextBin:nextBin,salesLog:salesLog})); } catch(e){}
+  }
+  function loadState() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) { var s=JSON.parse(raw); buyers=s.buyers||{}; nextBin=s.nextBin||1; salesLog=s.salesLog||[]; return true; }
+    } catch(e){}
+    return false;
+  }
+
+  // Pusher subscribe (receive only)
+  var pusher = new Pusher(PUSHER_KEY, { cluster: PUSHER_CLUSTER });
+  var channel = pusher.subscribe('aoki-sorter');
+
+  pusher.connection.bind('connected', function() {
+    var b=document.getElementById('sync-badge');
+    b.textContent='⚡ Live Sync On'; b.className='sync-badge on';
+  });
+  pusher.connection.bind('disconnected', function() {
+    var b=document.getElementById('sync-badge');
+    b.textContent='⚠ Disconnected'; b.className='sync-badge off';
+  });
+
+  channel.bind('sale', function(data) {
+    // Ignore if we already have this entry (sent by this tab)
+    var exists = salesLog.some(function(e){ return e.username===data.username && e.time===data.time; });
+    if (!exists) {
+      if (!buyers[data.username]) {
+        buyers[data.username] = { bin: data.bin, count: 0 };
+        if (data.bin >= nextBin) nextBin = data.bin + 1;
+      }
+      buyers[data.username].count = data.count;
+      salesLog.unshift(data);
+      saveState();
+      renderAll(data);
+    }
+  });
+
+  channel.bind('reset', function() {
+    buyers={}; nextBin=1; salesLog=[];
+    saveState(); clearUI();
+  });
+
+  // Send event via our Render server
+  function sendEvent(event, data) {
+    fetch(SERVER + '/trigger', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({event:event, data:data})
+    }).catch(function(e){ console.warn('Send failed:', e); });
+  }
+
+  function processSale(raw) {
+    var username = raw.trim().toLowerCase().replace(/\s+/g,'');
+    if (!username) return;
+    var isNew = !buyers[username];
+    if (isNew) buyers[username] = { bin: nextBin++, count: 0 };
+    buyers[username].count++;
+    var entry = { username:username, bin:buyers[username].bin, isNew:isNew, count:buyers[username].count, time:new Date().toISOString() };
+    salesLog.unshift(entry);
+    saveState();
+    renderAll(entry);
+    sendEvent('sale', entry);
+  }
+
+  function submitUsername() {
+    var input=document.getElementById('username-input');
+    var val=input.value.trim();
+    if (!val) return;
+    processSale(val);
+    input.value=''; input.focus();
+  }
+
+  var TEST_NAMES=['sneakerking','airmax_dan','jordan23collector','kicks4life','solecollector','hypebeast99','deadstock_dave','yeezy_fan','retrorunner','flightclub_rep','nicekicks_bob','j_collector','wearhouse_w','sockgod','pullup_pete','freshkicks22','sole_sister','swag_sarah','bigfoot_shoes','laceup_larry'];
+
+  function fireTestSale() {
+    var keys=Object.keys(buyers);
+    if(keys.length>3&&Math.random()<0.6){ processSale(keys[Math.floor(Math.random()*keys.length)]); }
+    else { processSale(TEST_NAMES[Math.floor(Math.random()*TEST_NAMES.length)]+Math.floor(Math.random()*99)); }
+  }
+
+  function renderAll(latest) {
+    updateStats();
+    if (latest) { updateFlash(latest); updateSorterDisplay(); }
+    updateFeed();
+    updateBinGrid();
+  }
+
+  function updateStats() {
+    document.getElementById('stat-sales').textContent=salesLog.length;
+    document.getElementById('stat-buyers').textContent=Object.keys(buyers).length;
+    document.getElementById('stat-bins').textContent=nextBin-1;
+  }
+
+  function updateFlash(e) {
+    var badge=e.isNew?'<div class="flash-new-badge">NEW BUYER</div>':'<div class="flash-repeat-badge">REPEAT</div>';
+    document.getElementById('flash-zone').innerHTML='<div class="flash-card">'+badge+
+      '<div style="display:flex;align-items:center;justify-content:center;gap:16px;margin:4px 0;">'+
+      '<div class="flash-username">'+e.username+'</div>'+
+      '<div style="font-size:20px;color:var(--muted);">→</div>'+
+      '<div><div class="flash-bin">BIN '+e.bin+'</div><div class="flash-bin-label">Bin Number</div></div>'+
+      '</div><div class="flash-count">Item #'+e.count+' for this buyer</div></div>';
+  }
+
+  function updateFeed() {
+    var feed=document.getElementById('recent-feed');
+    var recent=salesLog.slice(0,8);
+    if(!recent.length) return;
+    feed.innerHTML=recent.map(function(e,i){
+      var t=new Date(e.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      return '<div class="feed-item'+(i===0?' nf':'')+'">'+
+        '<div class="feed-bin">BIN '+e.bin+'</div>'+
+        '<div class="feed-username">'+e.username+'</div>'+
+        '<div class="feed-count-badge">'+e.count+' item'+(e.count>1?'s':'')+'</div>'+
+        '<div class="feed-time">'+t+'</div></div>';
+    }).join('');
+  }
+
+  function sorterCard(e) {
+    if(!e) return '<div class="s-waiting"><div style="font-size:16px;color:var(--muted);">—</div></div>';
+    var badge=e.isNew?'<div class="s-new">NEW BUYER</div>':'<div class="s-repeat">REPEAT</div>';
+    return '<div class="sorter-card">'+
+      '<div class="s-badge-row">'+badge+'</div>'+
+      '<div class="s-username">'+e.username+'</div>'+
+      '<div class="s-bin-label">Put in bin</div>'+
+      '<div class="s-bin">'+e.bin+'</div>'+
+      '<div class="s-count">Item <span>#'+e.count+'</span> for this buyer</div></div>';
+  }
+
+  function updateSorterDisplay() {
+    var curr=salesLog[0]||null, prev=salesLog[1]||null;
+    document.getElementById('pane-curr').innerHTML='<div class="pane-label">Current</div>'+sorterCard(curr);
+    document.getElementById('pane-prev').innerHTML='<div class="pane-label">Previous</div>'+sorterCard(prev);
+    document.getElementById('sorter-recent').innerHTML=salesLog.slice(0,8).map(function(e){
+      return '<div class="mini-chip"><span class="mini-bin">'+e.bin+'</span><span class="mini-user">'+e.username+'</span></div>';
+    }).join('');
+  }
+
+  function updateBinGrid() {
+    var grid=document.getElementById('bin-grid');
+    var entries=Object.entries(buyers).sort(function(a,b){return a[1].bin-b[1].bin;});
+    if(!entries.length){grid.innerHTML='<div class="bins-empty">No buyers yet.</div>';return;}
+    grid.innerHTML=entries.map(function(pair){
+      var u=pair[0],d=pair[1];
+      return '<div class="bin-card"><div class="bin-card-num">BIN '+d.bin+'</div>'+
+        '<div class="bin-card-user">'+u+'</div>'+
+        '<div class="bin-card-count">'+d.count+' item'+(d.count>1?'s':'')+'</div></div>';
+    }).join('');
+  }
+
+  function clearUI() {
+    document.getElementById('flash-zone').innerHTML='<div class="flash-empty">Waiting for first sale...</div>';
+    document.getElementById('recent-feed').innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px;">No sales yet</div>';
+    document.getElementById('pane-curr').innerHTML='<div class="pane-label">Current</div><div class="s-waiting"><div class="big">Waiting for sales...</div></div>';
+    document.getElementById('pane-prev').innerHTML='<div class="pane-label">Previous</div><div class="s-waiting"><div style="font-size:16px;color:var(--muted);">—</div></div>';
+    document.getElementById('sorter-recent').innerHTML='';
+    document.getElementById('bin-grid').innerHTML='<div class="bins-empty">No buyers yet.</div>';
+    updateStats();
+  }
+
+  function resetShow() {
+    if(!confirm('Reset all bins and sales for a new show?')) return;
+    buyers={}; nextBin=1; salesLog=[];
+    saveState();
+    sendEvent('reset', {});
+    clearUI();
+  }
+
+  function switchTab(name) {
+    var names=['input','sorter','bins'];
+    document.querySelectorAll('.tab').forEach(function(t,i){t.classList.toggle('active',names[i]===name);});
+    document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+    document.getElementById('panel-'+name).classList.add('active');
+    if(name==='input') document.getElementById('username-input').focus();
+  }
+
+  document.getElementById('username-input').addEventListener('keydown',function(e){if(e.key==='Enter')submitUsername();});
+
+  if (loadState()) { renderAll(salesLog[0]||null); }
+</script>
+</body>
+</html>
