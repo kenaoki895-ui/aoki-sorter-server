@@ -10,33 +10,36 @@
   :root {
     --bg:#0a0a0a; --surface:#141414; --surface2:#1e1e1e; --border:#2a2a2a;
     --green:#00e676; --green-dim:#00e67622; --yellow:#ffd600; --red:#ff1744;
+    --blue:#2979ff; --blue-dim:#2979ff22;
     --text:#f0f0f0; --muted:#666; --flash-bg:#00e67615;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column;}
-  header{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--border);background:var(--surface);}
+  header{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0;}
   .logo{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--green);letter-spacing:2px;text-transform:uppercase;}
-  .hright{display:flex;align-items:center;gap:20px;}
+  .hright{display:flex;align-items:center;gap:12px;}
   .sync-badge{font-size:11px;padding:3px 10px;border-radius:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;transition:all .3s;}
   .sync-badge.on{background:var(--green-dim);color:var(--green);border:1px solid var(--green);}
   .sync-badge.off{background:#ff174420;color:var(--red);border:1px solid var(--red);}
+  .btn-request-sync{background:var(--blue-dim);color:var(--blue);border:1px solid var(--blue);border-radius:5px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:1px;}
+  .btn-request-sync:hover{background:#2979ff33;}
   .header-stats{display:flex;gap:28px;}
   .stat{text-align:center;}
   .stat-val{font-size:22px;font-weight:900;color:var(--green);line-height:1;}
   .stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
-  .tabs{display:flex;border-bottom:1px solid var(--border);background:var(--surface);padding:0 24px;}
+  .tabs{display:flex;border-bottom:1px solid var(--border);background:var(--surface);padding:0 24px;flex-shrink:0;}
   .tab{padding:10px 20px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;text-transform:uppercase;letter-spacing:1px;}
   .tab.active{color:var(--green);border-bottom-color:var(--green);}
   .tab:hover:not(.active){color:var(--text);}
-  .panel{display:none;flex:1;flex-direction:column;}
+  .panel{display:none;flex:1;flex-direction:column;overflow:auto;}
   .panel.active{display:flex;}
 
   #panel-input{padding:24px;gap:16px;}
-  .test-bar{background:#1a1200;border:1px solid #ffd60033;border-radius:8px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .test-bar{background:#1a1200;border:1px solid #ffd60033;border-radius:8px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0;}
   .test-bar-text{font-size:13px;color:var(--yellow);}
   .btn-test{background:transparent;border:1px solid var(--yellow);color:var(--yellow);border-radius:5px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:1px;}
   .btn-test:hover{background:#ffd60015;}
-  .input-main{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;}
+  .input-main{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;flex-shrink:0;}
   .input-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;}
   .input-row{display:flex;gap:10px;}
   #username-input{flex:1;background:var(--bg);border:2px solid var(--border);border-radius:6px;padding:14px 18px;font-size:22px;font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--text);outline:none;transition:border-color .15s;text-transform:lowercase;}
@@ -44,7 +47,7 @@
   #username-input::placeholder{color:var(--muted);font-size:16px;}
   .btn-submit{background:var(--green);color:#000;border:none;border-radius:6px;padding:14px 28px;font-size:16px;font-weight:900;cursor:pointer;text-transform:uppercase;letter-spacing:1px;}
   .btn-submit:hover{opacity:.85;}
-  #flash-zone{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;min-height:110px;display:flex;align-items:center;justify-content:center;}
+  #flash-zone{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;min-height:110px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
   .flash-card{text-align:center;animation:flashIn .2s ease;}
   @keyframes flashIn{from{transform:scale(.92);opacity:0;}to{transform:scale(1);opacity:1;}}
   .flash-username{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:var(--text);}
@@ -55,7 +58,7 @@
   .flash-count{font-size:12px;color:var(--muted);margin-top:4px;}
   .flash-empty{color:var(--muted);font-size:14px;}
   .section-title{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;}
-  #recent-feed{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+  #recent-feed{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;flex-shrink:0;}
   .feed-item{display:flex;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border);gap:12px;animation:slideIn .2s ease;}
   .feed-item:last-child{border-bottom:none;}
   .feed-item.nf{background:var(--flash-bg);}
@@ -65,7 +68,7 @@
   .feed-count-badge{font-size:11px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:2px 8px;color:var(--muted);}
   .feed-time{font-size:11px;color:var(--muted);min-width:45px;text-align:right;}
 
-  #panel-sorter{background:var(--bg);}
+  #panel-sorter{background:var(--bg);overflow:hidden;}
   .sorter-split{display:grid;grid-template-columns:1fr 1fr;flex:1;min-height:0;}
   .sorter-pane{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;position:relative;}
   .sorter-pane.prev{opacity:.5;border-right:2px solid var(--border);}
@@ -91,22 +94,48 @@
   .mini-user{font-family:'JetBrains Mono',monospace;color:var(--text);}
 
   #panel-bins{padding:24px;gap:16px;}
-  .bins-toolbar{display:flex;align-items:center;justify-content:space-between;}
+  .bins-toolbar{display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
   .btn-reset{background:transparent;border:1px solid var(--red);color:var(--red);border-radius:5px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:1px;}
   .btn-reset:hover{background:#ff174415;}
   .btn-print{background:transparent;border:1px solid var(--green);color:var(--green);border-radius:5px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:1px;margin-right:8px;}
   .btn-print:hover{background:var(--green-dim);}
-  #bin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px;overflow-y:auto;}
+  #bin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px;}
   .bin-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:14px 16px;}
   .bin-card-num{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:900;color:var(--green);line-height:1;}
   .bin-card-user{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--text);margin-top:6px;word-break:break-all;}
   .bin-card-count{font-size:11px;color:var(--muted);margin-top:4px;}
   .bins-empty{color:var(--muted);font-size:14px;padding:40px;text-align:center;}
 
+  #panel-history{padding:24px;gap:16px;}
+  .history-toolbar{display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+  .btn-clear-history{background:transparent;border:1px solid var(--red);color:var(--red);border-radius:5px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:1px;}
+  .btn-clear-history:hover{background:#ff174415;}
+  .history-empty{color:var(--muted);font-size:14px;padding:40px;text-align:center;}
+  .show-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:12px;flex-shrink:0;}
+  .show-card-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;user-select:none;}
+  .show-card-header:hover{background:var(--surface2);}
+  .show-date{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--green);}
+  .show-meta{font-size:12px;color:var(--muted);margin-top:2px;}
+  .show-actions{display:flex;gap:8px;align-items:center;}
+  .btn-show-print{background:transparent;border:1px solid var(--green);color:var(--green);border-radius:5px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase;}
+  .btn-show-delete{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:5px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase;}
+  .btn-show-delete:hover{border-color:var(--red);color:var(--red);}
+  .show-chevron{color:var(--muted);font-size:16px;transition:transform .2s;margin-left:4px;}
+  .show-chevron.open{transform:rotate(180deg);}
+  .show-bins{display:none;padding:16px;border-top:1px solid var(--border);}
+  .show-bins.open{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;}
+  .show-bin-card{background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:10px 12px;}
+  .show-bin-num{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:900;color:var(--green);}
+  .show-bin-user{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);margin-top:3px;word-break:break-all;}
+  .show-bin-count{font-size:10px;color:var(--muted);margin-top:2px;}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--green);color:var(--green);padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;}
+  .toast.show{opacity:1;}
+
   @media print{
     body{background:white;color:black;}
-    header,.tabs,.test-bar,.bins-toolbar{display:none!important;}
-    #panel-input,#panel-sorter{display:none!important;}
+    header,.tabs,.test-bar,.bins-toolbar,.history-toolbar,.show-actions{display:none!important;}
+    #panel-input,#panel-sorter,#panel-history{display:none!important;}
     #panel-bins{display:flex!important;}
     .bin-card{border:1px solid #ccc;break-inside:avoid;}
     .bin-card-num,.bin-card-user{color:black;}
@@ -115,10 +144,13 @@
 </head>
 <body>
 
+<div class="toast" id="toast"></div>
+
 <header>
   <div class="logo">Aoki Collection // Live Sorter</div>
   <div class="hright">
     <span class="sync-badge off" id="sync-badge">⚡ Connecting...</span>
+    <button class="btn-request-sync" onclick="requestSync()" title="Request current state from other devices">↺ Sync</button>
     <div class="header-stats">
       <div class="stat"><div class="stat-val" id="stat-sales">0</div><div class="stat-label">Sales</div></div>
       <div class="stat"><div class="stat-val" id="stat-buyers">0</div><div class="stat-label">Buyers</div></div>
@@ -131,6 +163,7 @@
   <div class="tab active" onclick="switchTab('input')">Input</div>
   <div class="tab" onclick="switchTab('sorter')">Sorter Display</div>
   <div class="tab" onclick="switchTab('bins')">Bin Map</div>
+  <div class="tab" onclick="switchTab('history')">Show History</div>
 </div>
 
 <div class="panel active" id="panel-input">
@@ -180,14 +213,26 @@
   <div id="bin-grid"><div class="bins-empty">No buyers yet.</div></div>
 </div>
 
+<div class="panel" id="panel-history">
+  <div class="history-toolbar">
+    <div class="section-title" style="margin:0">Past Shows</div>
+    <button class="btn-clear-history" onclick="clearAllHistory()">Clear All History</button>
+  </div>
+  <div id="history-list"><div class="history-empty">No past shows yet. History is saved automatically when you reset a show.</div></div>
+</div>
+
 <script>
   var SERVER = 'https://aoki-sorter-server.onrender.com';
   var PUSHER_KEY = 'a4764a812a3a7413bc8e';
   var PUSHER_CLUSTER = 'us2';
   var STORAGE_KEY = 'aoki-sorter-state-v3';
+  var HISTORY_KEY = 'aoki-sorter-history-v1';
 
   var buyers = {}, nextBin = 1, salesLog = [];
+  var showHistory = [];
+  var myId = Math.random().toString(36).slice(2); // unique ID for this tab/device
 
+  // ── STORAGE ──
   function saveState() {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify({buyers:buyers,nextBin:nextBin,salesLog:salesLog})); } catch(e){}
   }
@@ -198,56 +243,137 @@
     } catch(e){}
     return false;
   }
+  function saveHistory() {
+    try { localStorage.setItem(HISTORY_KEY, JSON.stringify(showHistory)); } catch(e){}
+  }
+  function loadHistory() {
+    try { var raw=localStorage.getItem(HISTORY_KEY); if(raw){showHistory=JSON.parse(raw)||[];} } catch(e){}
+  }
+  function archiveCurrentShow() {
+    var keys=Object.keys(buyers);
+    if(!keys.length) return;
+    var date=salesLog.length?new Date(salesLog[salesLog.length-1].time):new Date();
+    showHistory.unshift({
+      id:Date.now(),
+      date:date.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),
+      time:date.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}),
+      totalSales:salesLog.length,
+      totalBuyers:keys.length,
+      buyers:JSON.parse(JSON.stringify(buyers))
+    });
+    saveHistory();
+    renderHistory();
+  }
 
-  // Pusher subscribe (receive only)
+  // ── TOAST ──
+  function showToast(msg) {
+    var t=document.getElementById('toast');
+    t.textContent=msg; t.classList.add('show');
+    setTimeout(function(){t.classList.remove('show');},2500);
+  }
+
+  // ── PUSHER ──
   var pusher = new Pusher(PUSHER_KEY, { cluster: PUSHER_CLUSTER });
   var channel = pusher.subscribe('aoki-sorter');
 
   pusher.connection.bind('connected', function() {
     var b=document.getElementById('sync-badge');
     b.textContent='⚡ Live Sync On'; b.className='sync-badge on';
+    // Auto-request state from other devices when connecting
+    setTimeout(function(){ autoRequestSync(); }, 800);
   });
   pusher.connection.bind('disconnected', function() {
     var b=document.getElementById('sync-badge');
     b.textContent='⚠ Disconnected'; b.className='sync-badge off';
   });
 
+  // Someone entered a sale
   channel.bind('sale', function(data) {
-    // Ignore if we already have this entry (sent by this tab)
-    var exists = salesLog.some(function(e){ return e.username===data.username && e.time===data.time; });
-    if (!exists) {
-      if (!buyers[data.username]) {
-        buyers[data.username] = { bin: data.bin, count: 0 };
-        if (data.bin >= nextBin) nextBin = data.bin + 1;
+    if(data.senderId === myId) return; // ignore own events
+    var exists=salesLog.some(function(e){return e.username===data.username&&e.time===data.time;});
+    if(!exists){
+      if(!buyers[data.username]){
+        buyers[data.username]={bin:data.bin,count:0};
+        if(data.bin>=nextBin) nextBin=data.bin+1;
       }
-      buyers[data.username].count = data.count;
+      buyers[data.username].count=data.count;
       salesLog.unshift(data);
       saveState();
       renderAll(data);
     }
   });
 
-  channel.bind('reset', function() {
-    buyers={}; nextBin=1; salesLog=[];
-    saveState(); clearUI();
+  // Someone requested full state sync
+  channel.bind('sync-request', function(data) {
+    if(data.senderId === myId) return;
+    // Only respond if we have state and more bins than the requester
+    var myBuyerCount = Object.keys(buyers).length;
+    if(myBuyerCount > 0 && myBuyerCount >= (data.buyerCount||0)){
+      sendEvent('sync-response', {
+        senderId: myId,
+        targetId: data.senderId,
+        buyers: buyers,
+        nextBin: nextBin,
+        salesLog: salesLog
+      });
+    }
   });
 
-  // Send event via our Render server
+  // Receive full state from another device
+  channel.bind('sync-response', function(data) {
+    if(data.senderId === myId) return;
+    if(data.targetId && data.targetId !== myId) return; // not for us
+    // Only apply if incoming state has more buyers (is more complete)
+    var incomingCount = Object.keys(data.buyers||{}).length;
+    var myCount = Object.keys(buyers).length;
+    if(incomingCount > myCount){
+      buyers=data.buyers; nextBin=data.nextBin; salesLog=data.salesLog;
+      saveState();
+      renderAll(salesLog[0]||null);
+      showToast('✓ Synced ' + incomingCount + ' buyers from another device');
+    }
+  });
+
+  channel.bind('reset', function(data) {
+    if(data && data.senderId === myId) return;
+    archiveCurrentShow();
+    buyers={}; nextBin=1; salesLog=[];
+    saveState(); clearUI();
+    showToast('Show reset by another device');
+  });
+
   function sendEvent(event, data) {
     fetch(SERVER + '/trigger', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({event:event, data:data})
-    }).catch(function(e){ console.warn('Send failed:', e); });
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({event:event,data:data})
+    }).catch(function(e){ console.warn('Send failed:',e); });
   }
 
+  function autoRequestSync() {
+    // Silently request state on connect — only if we have fewer than expected buyers
+    sendEvent('sync-request', {
+      senderId: myId,
+      buyerCount: Object.keys(buyers).length
+    });
+  }
+
+  function requestSync() {
+    showToast('Requesting state from other devices...');
+    sendEvent('sync-request', {
+      senderId: myId,
+      buyerCount: Object.keys(buyers).length
+    });
+  }
+
+  // ── CORE ──
   function processSale(raw) {
-    var username = raw.trim().toLowerCase().replace(/\s+/g,'');
-    if (!username) return;
-    var isNew = !buyers[username];
-    if (isNew) buyers[username] = { bin: nextBin++, count: 0 };
+    var username=raw.trim().toLowerCase().replace(/\s+/g,'');
+    if(!username) return;
+    var isNew=!buyers[username];
+    if(isNew) buyers[username]={bin:nextBin++,count:0};
     buyers[username].count++;
-    var entry = { username:username, bin:buyers[username].bin, isNew:isNew, count:buyers[username].count, time:new Date().toISOString() };
+    var entry={username:username,bin:buyers[username].bin,isNew:isNew,count:buyers[username].count,time:new Date().toISOString(),senderId:myId};
     salesLog.unshift(entry);
     saveState();
     renderAll(entry);
@@ -257,32 +383,30 @@
   function submitUsername() {
     var input=document.getElementById('username-input');
     var val=input.value.trim();
-    if (!val) return;
+    if(!val) return;
     processSale(val);
     input.value=''; input.focus();
   }
 
   var TEST_NAMES=['sneakerking','airmax_dan','jordan23collector','kicks4life','solecollector','hypebeast99','deadstock_dave','yeezy_fan','retrorunner','flightclub_rep','nicekicks_bob','j_collector','wearhouse_w','sockgod','pullup_pete','freshkicks22','sole_sister','swag_sarah','bigfoot_shoes','laceup_larry'];
-
   function fireTestSale() {
     var keys=Object.keys(buyers);
-    if(keys.length>3&&Math.random()<0.6){ processSale(keys[Math.floor(Math.random()*keys.length)]); }
-    else { processSale(TEST_NAMES[Math.floor(Math.random()*TEST_NAMES.length)]+Math.floor(Math.random()*99)); }
+    if(keys.length>3&&Math.random()<0.6){processSale(keys[Math.floor(Math.random()*keys.length)]);}
+    else{processSale(TEST_NAMES[Math.floor(Math.random()*TEST_NAMES.length)]+Math.floor(Math.random()*99));}
   }
 
+  // ── RENDER ──
   function renderAll(latest) {
     updateStats();
-    if (latest) { updateFlash(latest); updateSorterDisplay(); }
+    if(latest){updateFlash(latest);updateSorterDisplay();}
     updateFeed();
     updateBinGrid();
   }
-
   function updateStats() {
     document.getElementById('stat-sales').textContent=salesLog.length;
     document.getElementById('stat-buyers').textContent=Object.keys(buyers).length;
     document.getElementById('stat-bins').textContent=nextBin-1;
   }
-
   function updateFlash(e) {
     var badge=e.isNew?'<div class="flash-new-badge">NEW BUYER</div>':'<div class="flash-repeat-badge">REPEAT</div>';
     document.getElementById('flash-zone').innerHTML='<div class="flash-card">'+badge+
@@ -292,7 +416,6 @@
       '<div><div class="flash-bin">BIN '+e.bin+'</div><div class="flash-bin-label">Bin Number</div></div>'+
       '</div><div class="flash-count">Item #'+e.count+' for this buyer</div></div>';
   }
-
   function updateFeed() {
     var feed=document.getElementById('recent-feed');
     var recent=salesLog.slice(0,8);
@@ -306,7 +429,6 @@
         '<div class="feed-time">'+t+'</div></div>';
     }).join('');
   }
-
   function sorterCard(e) {
     if(!e) return '<div class="s-waiting"><div style="font-size:16px;color:var(--muted);">—</div></div>';
     var badge=e.isNew?'<div class="s-new">NEW BUYER</div>':'<div class="s-repeat">REPEAT</div>';
@@ -317,16 +439,14 @@
       '<div class="s-bin">'+e.bin+'</div>'+
       '<div class="s-count">Item <span>#'+e.count+'</span> for this buyer</div></div>';
   }
-
   function updateSorterDisplay() {
-    var curr=salesLog[0]||null, prev=salesLog[1]||null;
+    var curr=salesLog[0]||null,prev=salesLog[1]||null;
     document.getElementById('pane-curr').innerHTML='<div class="pane-label">Current</div>'+sorterCard(curr);
     document.getElementById('pane-prev').innerHTML='<div class="pane-label">Previous</div>'+sorterCard(prev);
     document.getElementById('sorter-recent').innerHTML=salesLog.slice(0,8).map(function(e){
       return '<div class="mini-chip"><span class="mini-bin">'+e.bin+'</span><span class="mini-user">'+e.username+'</span></div>';
     }).join('');
   }
-
   function updateBinGrid() {
     var grid=document.getElementById('bin-grid');
     var entries=Object.entries(buyers).sort(function(a,b){return a[1].bin-b[1].bin;});
@@ -338,7 +458,58 @@
         '<div class="bin-card-count">'+d.count+' item'+(d.count>1?'s':'')+'</div></div>';
     }).join('');
   }
-
+  function renderHistory() {
+    var list=document.getElementById('history-list');
+    if(!showHistory.length){
+      list.innerHTML='<div class="history-empty">No past shows yet. History is saved automatically when you reset a show.</div>';
+      return;
+    }
+    list.innerHTML=showHistory.map(function(show,si){
+      var binEntries=Object.entries(show.buyers).sort(function(a,b){return a[1].bin-b[1].bin;});
+      var binsHtml=binEntries.map(function(pair){
+        var u=pair[0],d=pair[1];
+        return '<div class="show-bin-card"><div class="show-bin-num">BIN '+d.bin+'</div>'+
+          '<div class="show-bin-user">'+u+'</div>'+
+          '<div class="show-bin-count">'+d.count+' item'+(d.count>1?'s':'')+'</div></div>';
+      }).join('');
+      return '<div class="show-card">'+
+        '<div class="show-card-header" onclick="toggleShow('+si+')">'+
+          '<div><div class="show-date">'+show.date+' &nbsp;·&nbsp; '+show.time+'</div>'+
+          '<div class="show-meta">'+show.totalSales+' sales &nbsp;·&nbsp; '+show.totalBuyers+' buyers &nbsp;·&nbsp; '+binEntries.length+' bins</div></div>'+
+          '<div class="show-actions">'+
+            '<button class="btn-show-print" onclick="printShow('+si+',event)">🖨 Print</button>'+
+            '<button class="btn-show-delete" onclick="deleteShow('+si+',event)">Delete</button>'+
+            '<span class="show-chevron" id="chev-'+si+'">▼</span>'+
+          '</div>'+
+        '</div>'+
+        '<div class="show-bins" id="show-bins-'+si+'">'+binsHtml+'</div></div>';
+    }).join('');
+  }
+  function toggleShow(i) {
+    var bins=document.getElementById('show-bins-'+i);
+    var chev=document.getElementById('chev-'+i);
+    bins.classList.toggle('open'); chev.classList.toggle('open');
+  }
+  function printShow(i,e) {
+    e.stopPropagation();
+    var show=showHistory[i];
+    var binEntries=Object.entries(show.buyers).sort(function(a,b){return a[1].bin-b[1].bin;});
+    var w=window.open('','_blank');
+    w.document.write('<html><head><title>'+show.date+'</title><style>body{font-family:sans-serif;padding:20px;}h2{margin-bottom:4px;}p{color:#666;margin-bottom:20px;}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}.card{border:1px solid #ccc;border-radius:6px;padding:12px;}.num{font-size:24px;font-weight:900;}.user{font-size:12px;font-weight:700;margin-top:4px;word-break:break-all;}.cnt{font-size:11px;color:#888;margin-top:2px;}</style></head><body>'+
+      '<h2>Aoki Collection — '+show.date+'</h2><p>'+show.totalSales+' sales · '+show.totalBuyers+' buyers</p><div class="grid">'+
+      binEntries.map(function(pair){var u=pair[0],d=pair[1];return '<div class="card"><div class="num">BIN '+d.bin+'</div><div class="user">'+u+'</div><div class="cnt">'+d.count+' item'+(d.count>1?'s':'')+'</div></div>';}).join('')+
+      '</div></body></html>');
+    w.document.close(); w.print();
+  }
+  function deleteShow(i,e) {
+    e.stopPropagation();
+    if(!confirm('Delete this show from history?')) return;
+    showHistory.splice(i,1); saveHistory(); renderHistory();
+  }
+  function clearAllHistory() {
+    if(!confirm('Clear ALL show history? This cannot be undone.')) return;
+    showHistory=[]; saveHistory(); renderHistory();
+  }
   function clearUI() {
     document.getElementById('flash-zone').innerHTML='<div class="flash-empty">Waiting for first sale...</div>';
     document.getElementById('recent-feed').innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px;">No sales yet</div>';
@@ -348,26 +519,25 @@
     document.getElementById('bin-grid').innerHTML='<div class="bins-empty">No buyers yet.</div>';
     updateStats();
   }
-
   function resetShow() {
-    if(!confirm('Reset all bins and sales for a new show?')) return;
+    if(!confirm('Reset show? Current show will be saved to history.')) return;
+    archiveCurrentShow();
     buyers={}; nextBin=1; salesLog=[];
     saveState();
-    sendEvent('reset', {});
+    sendEvent('reset',{senderId:myId});
     clearUI();
   }
-
   function switchTab(name) {
-    var names=['input','sorter','bins'];
+    var names=['input','sorter','bins','history'];
     document.querySelectorAll('.tab').forEach(function(t,i){t.classList.toggle('active',names[i]===name);});
     document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
     document.getElementById('panel-'+name).classList.add('active');
     if(name==='input') document.getElementById('username-input').focus();
   }
-
   document.getElementById('username-input').addEventListener('keydown',function(e){if(e.key==='Enter')submitUsername();});
 
-  if (loadState()) { renderAll(salesLog[0]||null); }
+  loadHistory(); renderHistory();
+  if(loadState()){renderAll(salesLog[0]||null);}
 </script>
 </body>
 </html>
